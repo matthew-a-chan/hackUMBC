@@ -7,7 +7,7 @@ var app = express();
 var SQL = new sqlite.Database(':memory:');
 
 
-SQL.run("CREATE TABLE washers (number INTEGER, name STRING, ");
+SQL.run("CREATE TABLE washers (number INTEGER, name STRING, time DATETIME)");//Number, Name, Time STARTING, 
 
 
 
@@ -43,8 +43,7 @@ app.post('/register', function (req, res) {
 
 
 
-app.listen(3000);
-
+app.listen(3000,() => console.log("App is running and listening on port 3000"));
 
 
 
