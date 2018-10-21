@@ -1,0 +1,14 @@
+<script>
+
+
+let someStuff={user:'garrett',timeSlot:'1000000',type:'washer',machine:'1',duration:'50000'}
+let url='http://127.0.0.1:3000/register'
+
+var xhr = new XMLHttpRequest();
+
+
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+xhr.send(someStuff);
+
+</script>

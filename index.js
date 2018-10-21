@@ -1,49 +1,82 @@
 let express = require('express');
 let sqlite = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
+//var Date = new Date();
 
 
 var app = express();
-var SQL = new sqlite.Database(':memory:');
+var db = new sqlite.Database('./databases/maindb.db');
 
 
-SQL.run("CREATE TABLE washers (number INTEGER, name STRING, time DATETIME)");//# washer, Name, Time STARTING the wash 
-SQL.run("CREATE TABLE dryers (number INTEGER, name STRING, time DATETIME)");//# dryer, name, time STARTING the dry
+db.all("CREATE TABLE IF NOT EXISTS washer (number INTEGER, name STRING, time TIMESTAMP, duration TIMESTAMP, type STRING);")
+db.all("CREATE TABLE IF NOT EXISTS dryer (number INTEGER, name STRING, time TIMESTAMP, duration TIMESTAMP, type STRING);")
 
 
-
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 
 
 app.get('/schedule', function (req, res) {
 
-    cleanDB();
 
-    response = getScheduleAndInfo(req);
+    db.all("DELETE FROM washer WHERE (time+duration)<" + Date.now() + ";", function() {
+        db.all("DELETE FROM dryer WHERE (time+duration)<" + Date.now() + ";", function () {
 
-    console.log('---------------'); //Debug nonesnse. please ignore.
-    console.log(response);
-    console.log('- - - - - - - -');
-    console.log(JSON.stringify(response));
-    console.log('---------------');
+            db.all("SELECT * FROM washer UNION SELECT * FROM dryer;", function (err, rows) {
+                console.log("Sending rows:" + rows);
+                res.json(JSON.stringify(rows))
 
+            })
 
-    res.json(JSON.stringify(response));
+        })
+    });
+
+    console.log("CURRENT TIME:" + Date.now())
 });
 
 
 app.post('/register', function (req, res) {
-    if (!isValidBooking(req)) {
-        res.status(400).send('400: Bad Request');
+
+    console.log(req.body);
+
+
+    if (    //Establishes proper request syntax
+        !(req.body.user &&
+            req.body.timeSlot &&
+            req.body.type &&
+            req.body.machine &&
+            req.body.duration)
+    ) {
+        res.status(400).send('400: Bad Request').end();
+        return;
     }
 
 
-    scheduleTime(req);
+    db.all("SELECT * FROM washer WHERE number = " + req.body.machine, function (err, rows) {
+
+
+        console.log(rows);
+
+        rows.forEach(row => {
+            if ((row.time < req.body.time + req.body.duration && row.time > req.body.time) ||
+                (row.time + row.duration > req.body.time && row.time + row.duration < req.body.time + req.body.duration) ||
+                (row.time < req.body.time && row.time + row.duration > req.body.time + req.body.duration)) {
+
+                res.status(400).send('400: Bad Request').end();
+                return;
+            }
+        });
+
+        res.status(200).end();
+
+        scheduleTime(req);
+
+        return;
+    });
 
 
 
-    res.status(200).end();
+
 });
 
 
@@ -53,70 +86,13 @@ app.listen(3000, () => console.log("App is running and listening on port 3000"))
 
 
 
-function getScheduleAndInfo(req) {
-
-
-
-    //RETURNS the schedule + relevant info in whatever format you want... gets stringified anyways
-
-
-}
-
-
-function getSchedule(req) {
-
-    //TODO: Pull all relevant data to the request req from the database 'SQL'
-    //This includes, but is not limited to who is currently queued up for machines XYZ and times registered.
-    //DO NOT: do any computations, etc... we'll leave that 
-    //Return it (ideally as a json string but doesn't really matter -- it gets stringified anyways) 
-
-    //RETURNS the schedule in whatever format you want... gets stringified anyways
-
-}
-
-
 function scheduleTime(req) {
 
-    //TODO: Given some valid booking (as checked by isValidBooking(req)) schedule the timeslot
-    //using the given request 'req' User, time starting, washer/dryer, machine #, etc... can be given by 
-    //req.body.user, req.body.timeSlot, req.body.type, req.body.machine, etc...
+    console.log("INSERTING:" + JSON.stringify(req.body));
 
-    //You'll have to insert it into the SQL database, using the following format:
-    //an int of the machine #, a string of the user's name, some DATETIME (in DATETIME format https://www.w3schools.com/sql/sql_dates.asp) 
+    console.log("CURRENT TIME:" + Date.now())
 
-    //RETURNS a boolean indicating whether or not the specified time was successfully scheduled (for the VERY rare case of multi-threaded access
-    //and two people booking at the same time and the DB locks)
+    db.all("INSERT INTO '" + req.body.type + "' VALUES (" + req.body.machine + ",'" + req.body.user + "'," + req.body.timeSlot + "," + req.body.duration + ",'" + req.body.type+"')");
 
 }
 
-
-function cleanDB() {
-
-    //TODO: go through all tables (in this case, just washer&dryer) and find all entries where the DATETIME + processing time for given machine
-    // is less than the current time (AKA find any entries that SHOULD have completed by now)
-    // and remove them from the table.
-
-    //Doesn't need to return anything
-}
-    
-
-
-function isValidBooking(req) {
-
-    if (    //Establishes proper request syntax
-        typeof req.body.user == 'string' &&
-        typeof req.body.timeSlot == 'date' &&
-        typeof req.body.type == 'string' &&
-        typeof req.body.machine == 'integer'
-    ) {
-        return true;
-    }
-
-    //TODO: establish proper input, then establish that the given machine/time is available and open at the requested time
-    //NOTE: the DATETIME given by the db's 'time' call is the start time of the washing. NOT the end time.
-    //Therefore, you'll have to account for that with 30+/60+ minutes for each different machine.
-
-
-    //Returns a boolean indicating whether or not the requested booking (in 'req') is a valid one or not
-    return false;
-}
