@@ -1,14 +1,165 @@
-<script>
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Laundry Scheduler</title>
+    <link rel='stylesheet' type='text/css' href='styles.css' />
+</head>
+
+<body>
+
+    This is a thing. Don't worry about it.
+
+    <table id='washer'>
 
 
-let someStuff={user:'garrett',timeSlot:'1000000',type:'washer',machine:'1',duration:'50000'}
-let url='http://127.0.0.1:3000/register'
-
-var xhr = new XMLHttpRequest();
 
 
-xhr.open("POST", url, true);
-xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-xhr.send(someStuff);
+    </table>
 
-</script>
+    <table id='dryer'>
+
+
+
+    </table>
+
+    <textarea id='name' placeholder='Name'></textarea>
+    <textarea id='cycles' placeholder='Extra cycles'></textarea>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+
+        function createTable(name) {
+            let i = 0
+            let k = 1
+            let inner = ''
+            inner += '<tbody>\n<tr>\n<th></th>\n'
+            for (k = 0; k < 48; k++) {
+                inner += '<th>' + Math.floor(k / 2) + ':' + (k % 2 == 1 ? '30' : '00') + '</th>\n'
+            }
+            inner += '</tr>\n'
+            for (i = 0; i < 3; i++) {
+                inner += '<tr>\n'
+
+                inner += '<th>Machine ' + i + '</th>'
+                for (k = 0; k < 48; k++) {
+                    inner += '<td class=\'row' + i + ' col' + k + '\'>' + '<button onclick=request(\'' + name + '-' + i + '-' + k + '\')>Schedule!</button></td>\n'
+                }
+
+                inner += '</tr>\n'
+            }
+            inner += '</tbody>\n'
+
+            //console.log(inner);
+            //console.log(document.getElementById(name))
+            document.getElementById(name).innerHTML = inner;
+        }
+
+
+        function fillTable(name) {
+            fetch('/schedule')
+                .then((resp) => resp.json()) // Transform the data into json
+                .then(function (data) {
+                    console.log(data)
+
+
+                    data.forEach(element => {
+                        let hours = new Date(element.time).getHours();
+                        let minutes = new Date(element.time).getMinutes();
+                        minutes = Math.round(minutes / 30) * 30
+
+                        console.log(hours)
+                        console.log(minutes)
+
+                        let col = 2 * hours + minutes / 30
+
+                        let row = element.number
+
+                        let a = document.getElementById(element.type).getElementsByClassName('col' + col).item(row);
+
+                        a.innerHTML = element.name;
+                        a.classList.add("filled")
+
+                        for (let i = 0; i < element.duration; i += 1800000) {
+                            let b = document.getElementById(element.type).getElementsByClassName('col' + (col+1)).item(row);
+
+                            b.innerHTML = element.name;
+                            b.classList.add("filled")
+                        }
+
+                        console.log(a);
+                    });
+
+                })
+        }
+
+
+
+        function request(out) {
+
+
+            let name = document.getElementById("name").value;
+            let type = out.split('-')[0]
+            let machine = out.split('-')[1]
+            let time = out.split('-')[2]
+
+            let date = new Date()
+
+            console.log(Math.floor(time / 2))
+
+
+            let timeStamp = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), Math.floor(time / 2), time % 2 == 1 ? 30 : 00, 00, 000) + 14400000;//TO adjust timezone
+
+            console.log(timeStamp)
+            console.log(new Date(timeStamp))
+
+            post(name, timeStamp, type, machine, type==='washer'?1800000:3600000)
+        }
+
+
+
+
+
+
+        function post(name, timeSlot, type, machineNum, duration) {
+
+
+            let obj = 'user=' + name + '&timeSlot=' + timeSlot + '&type=' + type + '&machine=' + machineNum + '&duration=' + duration
+
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body:
+                    obj
+            });
+        }
+
+        document.onload = new function () {
+            createTable('washer');
+            fillTable('washer');
+
+            createTable('dryer')
+            fillTable('dryer')
+        }
+
+    </script>
+</body>
+
+</html>

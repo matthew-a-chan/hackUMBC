@@ -1,6 +1,7 @@
 let express = require('express');
 let sqlite = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
+var path = require('path');
 //var Date = new Date();
 
 
@@ -15,16 +16,24 @@ db.all("CREATE TABLE IF NOT EXISTS dryer (number INTEGER, name STRING, time TIME
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/page.html'))
+})
+
+app.get('/styles.css', function (req, res) {
+    res.sendFile(path.join(__dirname + '/styles.css'))
+})
 
 app.get('/schedule', function (req, res) {
 
 
-    db.all("DELETE FROM washer WHERE (time+duration)<" + Date.now() + ";", function() {
+    db.all("DELETE FROM washer WHERE (time+duration)<" + Date.now() + ";", function () {
         db.all("DELETE FROM dryer WHERE (time+duration)<" + Date.now() + ";", function () {
 
             db.all("SELECT * FROM washer UNION SELECT * FROM dryer;", function (err, rows) {
                 console.log("Sending rows:" + rows);
-                res.json(JSON.stringify(rows))
+                console.log(JSON.stringify(rows))
+                res.send(JSON.stringify(rows))
 
             })
 
@@ -52,27 +61,27 @@ app.post('/register', function (req, res) {
     }
 
 
-    db.all("SELECT * FROM washer WHERE number = " + req.body.machine, function (err, rows) {
+        db.all('SELECT * FROM '+req.body.type+' WHERE number = ' + req.body.machine, function (err, rows) {
 
 
-        console.log(rows);
+            console.log(rows);
 
-        rows.forEach(row => {
-            if ((row.time < req.body.time + req.body.duration && row.time > req.body.time) ||
-                (row.time + row.duration > req.body.time && row.time + row.duration < req.body.time + req.body.duration) ||
-                (row.time < req.body.time && row.time + row.duration > req.body.time + req.body.duration)) {
+            rows.forEach(row => {
+                if ((row.time <= req.body.time + req.body.duration && row.time >= req.body.time) ||
+                    (row.time + row.duration >= req.body.time && row.time + row.duration <= req.body.time + req.body.duration) ||
+                    (row.time <= req.body.time && row.time + row.duration >= req.body.time + req.body.duration)) {
 
-                res.status(400).send('400: Bad Request').end();
-                return;
-            }
+                    res.status(400).send('400: BAD REQUEST').end();
+                    return;
+                }
+            });
+
+            res.status(200).end();
+
+            scheduleTime(req);
+
+            return;
         });
-
-        res.status(200).end();
-
-        scheduleTime(req);
-
-        return;
-    });
 
 
 
@@ -88,11 +97,12 @@ app.listen(3000, () => console.log("App is running and listening on port 3000"))
 
 function scheduleTime(req) {
 
-    console.log("INSERTING:" + JSON.stringify(req.body));
-
     console.log("CURRENT TIME:" + Date.now())
 
-    db.all("INSERT INTO '" + req.body.type + "' VALUES (" + req.body.machine + ",'" + req.body.user + "'," + req.body.timeSlot + "," + req.body.duration + ",'" + req.body.type+"')");
+    console.log("SQL CALL::" + "INSERT INTO '" + req.body.type + "' VALUES (" + req.body.machine + ",'" + req.body.user + "'," + req.body.timeSlot + "," + req.body.duration + ",'" + req.body.type + "')");
+    console.log("INSERTING:" + JSON.stringify(req.body));
+
+    db.all("INSERT INTO '" + req.body.type + "' VALUES (" + req.body.machine + ",'" + req.body.user + "'," + req.body.timeSlot + "," + req.body.duration + ",'" + req.body.type + "')");
 
 }
 

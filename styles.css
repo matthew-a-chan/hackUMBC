@@ -1,0 +1,25 @@
+th,td,tr{
+    border: 1px black solid;
+    text-align: center;
+}
+
+td {
+    min-width: 80px;
+
+}
+
+.filled {
+    background-color: red;
+}
+
+#name {
+    position:fixed;
+    bottom: 0px;
+    
+}
+
+#cycles {
+    position: fixed;
+    bottom:0px;
+    left:200px;
+}
