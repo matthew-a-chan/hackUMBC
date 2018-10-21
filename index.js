@@ -17,11 +17,47 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/page.html'))
+    res.sendFile(path.join(__dirname + '/main.html'))
+})
+
+app.get('/main.html', function (req, res) {
+    res.sendFile(path.join(__dirname + '/main.html'))
+})
+
+app.get('/halls.html', function (req, res) {
+    res.sendFile(path.join(__dirname + '/halls.html'))
+})
+
+app.get('/about.html', function (req, res) {
+    res.sendFile(path.join(__dirname + '/about.html'))
 })
 
 app.get('/styles.css', function (req, res) {
     res.sendFile(path.join(__dirname + '/styles.css'))
+})
+
+app.get('/hall_pages/styles.css', function (req, res) {
+    res.sendFile(path.join(__dirname + '/styles.css'))
+})
+
+app.get('/hall_pages/carroll.html', function (req, res) {
+    res.sendFile(path.join(__dirname + '/page.html'))
+})
+
+app.get('/Pictures/easton2.jpg', function (req,res) {
+    res.sendFile(path.join(__dirname + '/Pictures/easton2.jpg'))
+})
+
+app.get('/Pictures/wicomico1.jpg', function (req,res) {
+    res.sendFile(path.join(__dirname + '/Pictures/wicomico1.jpg'))
+})
+
+app.get('/Pictures/worcester1.jpg', function (req,res) {
+    res.sendFile(path.join(__dirname + '/Pictures/worcester1.jpg'))
+})
+
+app.get('/Pictures/carroll1.jpg', function (req,res) {
+    res.sendFile(path.join(__dirname + '/Pictures/carroll1.jpg'))
 })
 
 app.get('/schedule', function (req, res) {
