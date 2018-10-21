@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href = "./styles.css">
+		<title>About</title>
+	</head>
+	<body>
+		<h1 class='header' onclick=clickHeader()>About</h1>
+
+		<div class="menu">
+			<ul>
+				<a href="./main.html"><li>Home</li></a>
+				<a href="./halls.html"><li>Halls</li></a>
+				<a href="./about.html"><li>About</li></a>
+			</ul>
+		</div>
+
+		<p>This is a laundry app, go to the Halls page to schedule stuff!</p>
+
+
+		<script>
+			function displaySchedule(){
+				let a=document.getElementById('toChange');
+
+				// TODO: Implement backend "/schedule" call
+				// Matt
+				// Matt
+			}
+
+			function clickHeader() {
+				let a = document.getElementById('headClicked');
+				// TODO: Make the page go back to main page
+				window.location.href = "./main.html";
+			}
+
+		</script>
+
+
+	</body>
+</html>
