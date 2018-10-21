@@ -4,8 +4,25 @@ html {
 
 body {
 	margin-left: 0px;
-	margin-right:0px;
+	margin-right: 0px;
 	margin-top: 0px;
+}
+
+#image {
+	position: fixed;
+	top:0px;
+	left:0px;
+	z-index: -1;
+	opacity: .1;
+	background-image: url('Pictures/logo.png');
+	background-repeat: repeat;
+	background-size: 8% 16%;
+	height: 100%;
+	width: 100%;
+}
+
+#image *{
+	opacity: 1;
 }
 
 .hallHeaders {
@@ -96,7 +113,7 @@ td {
 #name {
     position:fixed;
     bottom: 0px;
-    
+
 }
 
 #cycles {
