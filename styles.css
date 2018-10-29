@@ -33,14 +33,28 @@ p {
 	padding-left: 200px;
 }
 
+.column {
+	float: left;
+	padding-left: 200px;
+	width = 30%;
+	padding = 5px;
+	padding-bottom: 10px;
+}
+
+.row::after {
+	content = "";
+	clear: both;
+	display: table;
+}
+
 .hallList {
 	padding-left: 150px;
 }
 
 .hallButton {
 	padding: 50px;
-	width: 75%;
-	padding-right: 450px;
+	height: 400px;
+	width: 600px;
 	border: none;
   color: white;
 	text-align: center;
@@ -51,7 +65,9 @@ p {
 	font-size: 50px;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-size: center;
 }
+
 
 .header{
 	background-color: #eb2d3a;
