@@ -26,7 +26,8 @@ body {
 }
 
 .hallHeaders {
-	font-size: 30px;
+	font-size: 40px;
+	padding-left: 33%;
 }
 
 p {
@@ -39,6 +40,14 @@ p {
 	width = 30%;
 	padding = 5px;
 	padding-bottom: 10px;
+}
+
+.column2 {
+	float: left;
+	padding-left: 200px;
+	width = 30%;
+	padding = 5px;
+	padding-bottom: 40px;
 }
 
 .row::after {
