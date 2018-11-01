@@ -95,6 +95,7 @@ p {
 	background-color: #1161e0;
 	color: #ffffff;
 	text-align: center;
+	border-color: #eb2d3a;
 }
 
 .menu li:hover {
@@ -103,6 +104,35 @@ p {
 	background-color: #0d47a3;
 	color: #ffffff;
 	text-align: center;
+	border-color: #eb2d3a;
+}
+
+.menu2 li {
+	font-size: 30px;
+	padding: 8px;
+	margin-bottom: 7px;
+	background-color: #267326;
+	color: #ffffff;
+	text-align: center;
+	line-height: 50px;
+	height: 50px;
+	border: 2px solid;
+	border-color: #000000;
+	opacity: .8;
+}
+
+.menu2 li:hover {
+	font-size: 30px;
+	padding: 8px;
+	margin-bottom: 7px;
+	background-color: #0d47a3;
+	color: #ffffff;
+	text-align: center;
+	line-height: 50px;
+	height: 50px;
+	border: 2px solid;
+	border-color: #eb2d3a;
+	opacity: .3;
 }
 
 ul {

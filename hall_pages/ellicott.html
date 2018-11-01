@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href = "../styles.css">
+		<title>Ellicott Hall</title>
+	</head>
+	<body>
+
+		<div class="menu">
+			<ul style="padding-top: 20px;">
+				<a href="../main.html"><li>Home</li></a>
+				<a href="../halls.html"><li>Halls</li></a>
+			</ul>
+		</div>
+
+		<h1 class='header' onclick=clickHeader()>Ellicott Hall</h1>
+
+
+		<p >
+			<div class='row'>
+				<div class='column' style="padding-left: 8%">
+					<button class='hallButton buttonTest' style="background-image: url('../Pictures/ellicot1.jpg');"></button></a>
+				</div>
+
+				<div class="menu2">
+					<ul style="padding-left: 4%; padding-top: 5px; width: 300px;">
+						<li>Floor 1</li>
+						<li>Floor 3</li>
+						<li>Floor 5</li>
+						<li>Floor 7</li>
+					</ul>
+				</div>
+				<div class="menu2">
+					<ul style="padding-left: 5%; padding-top: 5px; width: 300px;">
+						<li>Floor 2</li>
+						<li>Floor 4</li>
+						<li>Floor 6</li>
+						<li>Floor 8</li>
+					</ul>
+				</div>
+
+			</div>
+		</p>
+
+
+		<div id="image">
+	</div>
+
+		<script>
+			function displaySchedule(){
+				let a=document.getElementById('toChange');
+
+				// TODO: Implement backend "/schedule" call
+				// Matt
+				// Matt
+			}
+
+			function clickHeader() {
+				let a = document.getElementById('headClicked');
+				// TODO: Make the page go back to main page
+				window.location.href = "./main.html";
+			}
+
+		</script>
+
+
+	</body>
+</html>
