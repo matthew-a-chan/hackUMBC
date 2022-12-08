@@ -9,7 +9,7 @@
   "author": "Matthew Chan",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "path": "^0.12.7",
     "sqlite3": "^4.0.2"
   }
